@@ -1,5 +1,7 @@
 package com.ecom.api.model;
 
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,7 @@ import lombok.ToString;
 public class RegistrationBody {
 
     private String userName;
+    @Email
     private String email;
 
     private String password;
