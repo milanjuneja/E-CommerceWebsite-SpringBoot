@@ -4,12 +4,14 @@ import com.ecom.api.model.LoginBody;
 import com.ecom.api.model.LoginResponse;
 import com.ecom.api.model.RegistrationBody;
 import com.ecom.exception.UserAlreadyExistsException;
+import com.ecom.model.LocalUser;
 import com.ecom.service.UserService;
 import jakarta.validation.Valid;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,5 +45,10 @@ public class AuthenticationController {
             return ResponseEntity.ok(response);
         }
 
+    }
+
+    @GetMapping("/me")
+    public LocalUser getLoggedInUserProfile(@AuthenticationPrincipal LocalUser user){
+        return user;
     }
 }
