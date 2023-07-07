@@ -3,6 +3,7 @@ package com.ecom.api.controller.auth;
 import com.ecom.api.model.LoginBody;
 import com.ecom.api.model.LoginResponse;
 import com.ecom.api.model.RegistrationBody;
+import com.ecom.exception.EmailFailureException;
 import com.ecom.exception.UserAlreadyExistsException;
 import com.ecom.model.LocalUser;
 import com.ecom.service.UserService;
@@ -29,6 +30,8 @@ public class AuthenticationController {
         }
         catch (UserAlreadyExistsException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (EmailFailureException e) {
+            throw new RuntimeException(e);
         }
 
 

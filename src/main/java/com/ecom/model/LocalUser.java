@@ -34,4 +34,11 @@ public class LocalUser {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> address = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id desc")
+    private List<VerificationToken> verificationTokens = new ArrayList<>();
+
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified = false;
+
 }
