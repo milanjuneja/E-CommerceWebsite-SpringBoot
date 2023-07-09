@@ -1,14 +1,18 @@
 package com.ecom.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
 
     private String jwt;
+
+    private boolean success;
+
+    private String failureReason;
+
 }

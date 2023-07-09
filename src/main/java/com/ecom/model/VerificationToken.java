@@ -28,7 +28,7 @@ public class VerificationToken {
     @Column(name = "created_timestamp", nullable = false)
     private Timestamp createdTimeStamp;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private LocalUser user;
 

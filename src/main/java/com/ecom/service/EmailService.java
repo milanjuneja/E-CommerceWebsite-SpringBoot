@@ -2,6 +2,9 @@ package com.ecom.service;
 
 import com.ecom.exception.EmailFailureException;
 import com.ecom.model.VerificationToken;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,12 +12,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
+@Getter
+@Setter
 public class EmailService {
 
     @Value("${email.from}")
     private String fromAddress;
     @Value("${app.frontend.url}")
     private String url;
+    @Autowired
     private JavaMailSender javaMailSender;
 
     private SimpleMailMessage makeMailMessage(){
