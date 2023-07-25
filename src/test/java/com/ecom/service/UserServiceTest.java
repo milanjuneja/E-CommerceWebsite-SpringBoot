@@ -101,4 +101,10 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    @Transactional
+    public void testVerifyUser(){
+        Assertions.assertFalse(userService.verifyUser("Bad Token"), "Token that is bad or does not exists");
+    }
+
 }

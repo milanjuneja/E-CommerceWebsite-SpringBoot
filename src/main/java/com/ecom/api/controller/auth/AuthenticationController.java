@@ -23,6 +23,8 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
+
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody RegistrationBody registrationBody) {
 
