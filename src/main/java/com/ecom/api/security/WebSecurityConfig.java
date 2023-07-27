@@ -27,6 +27,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/verify").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 
 
