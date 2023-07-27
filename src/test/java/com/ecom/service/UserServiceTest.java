@@ -5,6 +5,8 @@ import com.ecom.api.model.RegistrationBody;
 import com.ecom.exception.EmailFailureException;
 import com.ecom.exception.UserAlreadyExistsException;
 import com.ecom.exception.UserNotVerifiedException;
+import com.ecom.model.VerificationToken;
+import com.ecom.model.dao.VerificationTokenDao;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
@@ -19,6 +21,8 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class UserServiceTest {
@@ -32,6 +36,9 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private VerificationTokenDao verificationTokenDao;
 
     @Test
     @Transactional
@@ -105,6 +112,20 @@ public class UserServiceTest {
     @Transactional
     public void testVerifyUser(){
         Assertions.assertFalse(userService.verifyUser("Bad Token"), "Token that is bad or does not exists");
+        LoginBody body = new LoginBody();
+        body.setUserName("UserB");
+        body.setPassword("PasswordB123");
+
+                try {
+            userService.loginUser(body);
+            Assertions.assertTrue(false, "User should not have mail verified");
+        }catch (UserNotVerifiedException | EmailFailureException ex){
+                    List<VerificationToken> tokens = verificationTokenDao.findByUser_UserIdOrderByIdDesc(2L);
+                    String token = tokens.get(0).getToken();
+                    Assertions.assertTrue(userService.verifyUser(token), "Token should be valid");
+                    Assertions.assertNotNull(body, "User should be verified");
+        }
+
     }
 
 }

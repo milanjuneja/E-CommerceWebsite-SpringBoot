@@ -13,6 +13,7 @@ public class EncryptionService {
 
     private String salt;
 
+
     @PostConstruct
     public void postConstruct(){
         salt = BCrypt.gensalt(saltRounds);
