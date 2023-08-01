@@ -34,6 +34,7 @@ public class LocalUser {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Address> address = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id desc")
     private List<VerificationToken> verificationTokens = new ArrayList<>();
