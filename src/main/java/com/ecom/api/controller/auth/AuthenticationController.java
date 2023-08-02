@@ -2,8 +2,10 @@ package com.ecom.api.controller.auth;
 
 import com.ecom.api.model.LoginBody;
 import com.ecom.api.model.LoginResponse;
+import com.ecom.api.model.PasswordResetBody;
 import com.ecom.api.model.RegistrationBody;
 import com.ecom.exception.EmailFailureException;
+import com.ecom.exception.EmailNotFoundException;
 import com.ecom.exception.UserAlreadyExistsException;
 import com.ecom.exception.UserNotVerifiedException;
 import com.ecom.model.LocalUser;
@@ -79,5 +81,23 @@ public class AuthenticationController {
     @GetMapping("/me")
     public LocalUser getLoggedInUserProfile(@AuthenticationPrincipal LocalUser user){
         return user;
+    }
+
+    @PostMapping("/forgot")
+    public ResponseEntity forgotPassword(@RequestParam String email){
+        try {
+            userService.forgotPassword(email);
+            return ResponseEntity.ok().build();
+        } catch (EmailNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (EmailFailureException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity resetPassword(@Valid @RequestBody PasswordResetBody body){
+        userService.resetPassword(body);
+        return ResponseEntity.ok().build();
     }
 }

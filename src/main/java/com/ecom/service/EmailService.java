@@ -1,6 +1,7 @@
 package com.ecom.service;
 
 import com.ecom.exception.EmailFailureException;
+import com.ecom.model.LocalUser;
 import com.ecom.model.VerificationToken;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,22 @@ public class EmailService {
         message.setSubject("Verify to activate account");
         message.setText("Please follow the link below to verify your email to activate the account.\n" +
                 url + "/auth/verify?token=" + verificationToken.getToken());
+
+        try {
+            javaMailSender.send(message);
+        }catch (MailException ex){
+            throw new EmailFailureException();
+        }
+
+    }
+
+    public void sendPasswordResetEmail(LocalUser user, String token) throws EmailFailureException{
+        SimpleMailMessage message = makeMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Your password reset request link.");
+        message.setText("You requested a password reset on our website. Please " +
+                "find the link below to reset your password.\n" +
+                url + "/auth/reset?token=" + token);
 
         try {
             javaMailSender.send(message);
