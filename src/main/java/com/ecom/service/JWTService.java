@@ -50,18 +50,18 @@ public class JWTService {
 
     public String generatePasswordResetJWT(LocalUser user){
         return JWT.create()
-                .withClaim(RESET_PASSWORD_EMAIL_KEY, user.getUserName())
+                .withClaim(RESET_PASSWORD_EMAIL_KEY, user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 30)))
                 .withIssuer(issuer)
                 .sign(algorithm);
     }
 
     public String getResetPasswordEmail(String token){
-        DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
         return jwt.getClaim(RESET_PASSWORD_EMAIL_KEY).asString();
     }
     public String getUserName(String token){
-        DecodedJWT jwt = JWT.require(algorithm).build().verify(token);
+        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
         return jwt.getClaim(USERNAME_KEY).asString();
     }
 

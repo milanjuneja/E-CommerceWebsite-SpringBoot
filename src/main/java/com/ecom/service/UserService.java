@@ -129,6 +129,7 @@ public class UserService {
 
     public void resetPassword(PasswordResetBody body){
         String email = jwtService.getResetPasswordEmail(body.getToken());
+//        System.out.println(body);
         Optional<LocalUser> opUser = localUserDao.findByEmailIgnoreCase(email);
 
         if(opUser.isPresent()){
@@ -136,9 +137,7 @@ public class UserService {
             user.setPassword(encryptionService.encryptPassword(body.getPassword()));
             localUserDao.save(user);
         }
-        else {
 
-        }
     }
 
 }

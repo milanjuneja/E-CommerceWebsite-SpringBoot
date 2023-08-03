@@ -1,11 +1,15 @@
 package com.ecom.service;
 
 import com.ecom.api.model.LoginBody;
+import com.ecom.api.model.PasswordResetBody;
 import com.ecom.api.model.RegistrationBody;
 import com.ecom.exception.EmailFailureException;
+import com.ecom.exception.EmailNotFoundException;
 import com.ecom.exception.UserAlreadyExistsException;
 import com.ecom.exception.UserNotVerifiedException;
+import com.ecom.model.LocalUser;
 import com.ecom.model.VerificationToken;
+import com.ecom.model.dao.LocalUserDao;
 import com.ecom.model.dao.VerificationTokenDao;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.util.GreenMail;
@@ -41,6 +45,15 @@ public class UserServiceTest {
 
     @Autowired
     private VerificationTokenDao verificationTokenDao;
+
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    private LocalUserDao localUserDao;
+
+    @Autowired
+    private EncryptionService encryptionService;
 
     @Test
     @Transactional
@@ -127,6 +140,38 @@ public class UserServiceTest {
                     Assertions.assertTrue(userService.verifyUser(token), "Token should be valid");
                     Assertions.assertNotNull(body, "User should be verified");
         }
+
+    }
+
+    @Test
+    @Transactional
+    public void testForgotPassword(){
+        Assertions.assertThrows(EmailNotFoundException.class,
+                () -> userService.forgotPassword("UserNotExist@junit.com"));
+
+        Assertions.assertDoesNotThrow(()-> userService.forgotPassword("UserA@junit.com"));
+
+//        Assertions.assertEquals("UserA@junit.com", greenMailExtention.getRecievedMessage()[0].getReciepts(Message.RecipientType.TO[0].toString()));
+
+
+
+    }
+
+    @Test
+    public void testResetPassword(){
+        LocalUser user = localUserDao.findByUserNameIgnoreCase("UserA").get();
+        String token = jwtService.generatePasswordResetJWT(user);
+
+        PasswordResetBody body = new PasswordResetBody();
+        body.setToken(token);
+        body.setPassword("Password1234");
+        userService.resetPassword(body);
+        user = localUserDao.findByUserNameIgnoreCase("UserA").get();
+
+        Assertions.assertTrue(encryptionService.verifyPassword("Password1234",
+                user.getPassword()),
+                "Password change should be written to DB");
+
 
     }
 
